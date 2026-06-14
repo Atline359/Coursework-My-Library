@@ -1,0 +1,72 @@
+[
+  {
+    "Id": 1,
+    "Title": "1984",
+    "Author": "Джордж Оруэлл",
+    "Genre": "Фантастика",
+    "Year": 1949,
+    "Pages": 328,
+    "IsRead": false,
+    "Rating": 5
+  },
+  {
+    "Id": 2,
+    "Title": "Дюна",
+    "Author": " Фрэнк Герберт",
+    "Genre": "Фантастика",
+    "Year": 1965,
+    "Pages": 896,
+    "IsRead": false,
+    "Rating": 5
+  },
+  {
+    "Id": 3,
+    "Title": "Шерлок Холмс",
+    "Author": "Артур Конан Дойл",
+    "Genre": "Детектив",
+    "Year": 1892,
+    "Pages": 400,
+    "IsRead": false,
+    "Rating": 5
+  },
+  {
+    "Id": 4,
+    "Title": "Преступление и наказание",
+    "Author": "Фёдор Достоевский",
+    "Genre": "Детектив",
+    "Year": 1866,
+    "Pages": 672,
+    "IsRead": true,
+    "Rating": 4
+  },
+  {
+    "Id": 5,
+    "Title": "Война и мир",
+    "Author": " Лев Толстой",
+    "Genre": "Классика",
+    "Year": 1869,
+    "Pages": 1300,
+    "IsRead": true,
+    "Rating": 5
+  },
+  {
+    "Id": 6,
+    "Title": "Мёртвые души",
+    "Author": "Николай Гоголь",
+    "Genre": "Классика",
+    "Year": 1842,
+    "Pages": 352,
+    "IsRead": true,
+    "Rating": 4
+  },
+  {
+    "Id": 7,
+    "Title": "Великий Гэтсби",
+    "Author": "Фрэнсис Скотт Фицджеральд ",
+    "Genre": "Роман",
+    "Year": 1925,
+    "Pages": 192,
+    "IsRead": false,
+    "Rating": 5
+  }
+]
