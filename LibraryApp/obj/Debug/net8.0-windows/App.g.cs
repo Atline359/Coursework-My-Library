@@ -44,7 +44,7 @@ namespace LibraryApp {
         /// </summary>
         [System.STAThreadAttribute()]
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "8.0.27.0")]
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "8.0.28.0")]
         public static void Main() {
             LibraryApp.App app = new LibraryApp.App();
             app.Run();
