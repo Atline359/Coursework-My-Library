@@ -75,6 +75,12 @@ namespace LibraryApp.Models
             {
                 var json = File.ReadAllText(_filePath);
                 _books = JsonConvert.DeserializeObject<List<Book>>(json) ?? new List<Book>();
+                
+                foreach (var book in _books)
+                {
+                    if (book.DateAdded == default)
+                        book.DateAdded = DateTime.Now;
+                }
             }
             else
             {

@@ -1,9 +1,10 @@
 <Window x:Class="LibraryApp.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Моя библиотека" Height="600" Width="1200"
+        Title="Моя библиотека" Height="600" Width="1000"
         WindowStartupLocation="CenterScreen">
-
+    
+    
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,25 +15,33 @@
 
         <TextBlock Text="Моя библиотека" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
 
+        <!-- Панель фильтров -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
             <TextBlock Text="Всего книг:" VerticalAlignment="Center" Margin="5"/>
             <TextBlock Text="{Binding TotalBooksCount}" FontWeight="Bold" Margin="0,0,15,0"/>
-    
+            
             <TextBlock Text="Прочитано:" VerticalAlignment="Center" Margin="5"/>
             <TextBlock Text="{Binding ReadBooksCount}" FontWeight="Bold" Margin="0,0,15,0"/>
-    
+            
             <TextBlock Text="Жанр:" VerticalAlignment="Center" Margin="15,5,5,5"/>
-            <ComboBox ItemsSource="{Binding Genres}" SelectedItem="{Binding SelectedGenre}" Width="120" Margin="5"/>
-    
+            <ComboBox ItemsSource="{Binding Genres}" SelectedItem="{Binding SelectedGenre}" Width="100" Margin="5"/>
+            
+            <TextBlock Text="Автор:" VerticalAlignment="Center" Margin="15,5,5,5"/>
+            <ComboBox ItemsSource="{Binding Authors}" SelectedItem="{Binding SelectedAuthor}" Width="120" Margin="5"/>
+            
+            <TextBlock Text="Год:" VerticalAlignment="Center" Margin="15,5,5,5"/>
+            <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear}" Width="80" Margin="5"/>
+            
             <TextBlock Text="Поиск:" VerticalAlignment="Center" Margin="15,5,5,5"/>
-            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5"/>
-    
+            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="5"/>
+            
             <CheckBox Content="Только непрочитанные" IsChecked="{Binding ShowOnlyUnread}" Margin="15,5,5,5"/>
-    
+            
             <TextBlock Text="Сортировка:" VerticalAlignment="Center" Margin="15,5,5,5"/>
-            <ComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" Width="140" Margin="5"/>
+            <ComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSort}" Width="120" Margin="5"/>
         </StackPanel>
 
+        <!-- Таблица книг -->
         <DataGrid Grid.Row="2" ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook}"
                   AutoGenerateColumns="False" IsReadOnly="True" Margin="0,5">
             <DataGrid.Columns>
@@ -46,12 +55,13 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <!-- Кнопки действий -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">
             <Button Content="Добавить" Command="{Binding AddBookCommand}" Width="100" Height="30" Margin="5"/>
             <Button Content="Редактировать" Command="{Binding EditBookCommand}" Width="100" Height="30" Margin="5"/>
             <Button Content="Удалить" Command="{Binding DeleteBookCommand}" Width="100" Height="30" Margin="5"/>
             <Button Content="Отметить прочитанной" Command="{Binding ToggleReadCommand}" Width="150" Height="30" Margin="5"/>
-            <Button Content="Экспорт в CSV" Command="{Binding ExportCsvCommand}" Width="130" Height="30" Margin="5"/>
+            <Button Content="Экспорт в CSV" Command="{Binding ExportCsvCommand}" Width="120" Height="30" Margin="5"/>
         </StackPanel>
     </Grid>
 </Window>

@@ -10,5 +10,6 @@ namespace LibraryApp.Models
         public int Pages { get; set; }
         public bool IsRead { get; set; }
         public int Rating { get; set; }
+        public DateTime DateAdded { get; set; }
     }
 }

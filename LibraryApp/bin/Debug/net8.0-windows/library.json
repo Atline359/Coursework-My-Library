@@ -2,12 +2,13 @@
   {
     "Id": 1,
     "Title": "1984",
-    "Author": "Джордж Оруэлл",
+    "Author": "Оруэлл",
     "Genre": "Фантастика",
     "Year": 1949,
     "Pages": 328,
     "IsRead": false,
-    "Rating": 5
+    "Rating": 5,
+    "DateAdded": "2024-01-01T12:00:00"
   },
   {
     "Id": 2,
@@ -17,7 +18,8 @@
     "Year": 1965,
     "Pages": 896,
     "IsRead": false,
-    "Rating": 5
+    "Rating": 5,
+    "DateAdded": "2026-06-14T20:33:01.808328+03:00"
   },
   {
     "Id": 3,
@@ -26,8 +28,9 @@
     "Genre": "Детектив",
     "Year": 1892,
     "Pages": 400,
-    "IsRead": false,
-    "Rating": 5
+    "IsRead": true,
+    "Rating": 4,
+    "DateAdded": "2026-06-14T20:33:01.8083286+03:00"
   },
   {
     "Id": 4,
@@ -37,7 +40,8 @@
     "Year": 1866,
     "Pages": 672,
     "IsRead": true,
-    "Rating": 4
+    "Rating": 3,
+    "DateAdded": "2026-06-14T20:33:01.8083287+03:00"
   },
   {
     "Id": 5,
@@ -47,7 +51,8 @@
     "Year": 1869,
     "Pages": 1300,
     "IsRead": true,
-    "Rating": 5
+    "Rating": 5,
+    "DateAdded": "2026-06-14T20:33:01.8083287+03:00"
   },
   {
     "Id": 6,
@@ -57,7 +62,8 @@
     "Year": 1842,
     "Pages": 352,
     "IsRead": true,
-    "Rating": 4
+    "Rating": 5,
+    "DateAdded": "2026-06-14T20:33:01.8083288+03:00"
   },
   {
     "Id": 7,
@@ -67,6 +73,7 @@
     "Year": 1925,
     "Pages": 192,
     "IsRead": false,
-    "Rating": 5
+    "Rating": 4,
+    "DateAdded": "2026-06-14T20:33:01.8083288+03:00"
   }
 ]

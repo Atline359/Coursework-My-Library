@@ -15,6 +15,8 @@ namespace LibraryApp.ViewModels
     public class MainViewModel : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
     {
         private readonly LibraryRepository _repository;
+        public ObservableCollection<string> Authors { get; set; }
+        public ObservableCollection<string> Years { get; set; }
 
         // Коллекции
         public ObservableCollection<Book> Books { get; set; }
@@ -41,6 +43,28 @@ namespace LibraryApp.ViewModels
         {
             get => _selectedGenre;
             set { SetProperty(ref _selectedGenre, value); ApplyFilters(); }
+        }
+        
+        private string _selectedAuthor = "Все";
+        public string SelectedAuthor
+        {
+            get => _selectedAuthor;
+            set
+            {
+                SetProperty(ref _selectedAuthor, value);
+                ApplyFilters();
+            }
+        }
+
+        private string _selectedYear = "Все";
+        public string SelectedYear
+        {
+            get => _selectedYear;
+            set
+            {
+                SetProperty(ref _selectedYear, value);
+                ApplyFilters();
+            }
         }
 
         private bool _showOnlyUnread = false;
@@ -93,6 +117,8 @@ namespace LibraryApp.ViewModels
             Books = new ObservableCollection<Book>();
 
             Genres = new ObservableCollection<string> { "Все", "Фантастика", "Детектив", "Наука", "Роман", "Классика" };
+            Authors = new ObservableCollection<string>();
+            Years = new ObservableCollection<string>();
             SortOptions = new ObservableCollection<string> 
             { 
                 "Название (А-Я)", "Название (Я-А)", "Год (новые)", "Год (старые)", "Оценка (высокая)", "Оценка (низкая)" 
@@ -105,6 +131,7 @@ namespace LibraryApp.ViewModels
             ExportCsvCommand = new RelayCommand(ExportToCsv);
 
             LoadBooks();
+            CheckUnreadBooksReminder();
         }
 
         // Загрузить все книги
@@ -115,6 +142,7 @@ namespace LibraryApp.ViewModels
             foreach (var book in books)
                 Books.Add(book);
             ApplyFilters();
+            UpdateFilters();
         }
 
         // Применить фильтры и сортировку
@@ -122,17 +150,29 @@ namespace LibraryApp.ViewModels
         {
             var filtered = _repository.GetAll().AsEnumerable();
 
+            // Фильтр по жанру
             if (SelectedGenre != "Все")
                 filtered = filtered.Where(b => b.Genre == SelectedGenre);
 
+            // Фильтр по автору
+            if (SelectedAuthor != "Все")
+                filtered = filtered.Where(b => b.Author == SelectedAuthor);
+
+            // Фильтр по году
+            if (SelectedYear != "Все")
+                filtered = filtered.Where(b => b.Year.ToString() == SelectedYear);
+
+            // Фильтр "только непрочитанные"
             if (ShowOnlyUnread)
                 filtered = filtered.Where(b => !b.IsRead);
 
+            // Поиск по названию или автору
             if (!string.IsNullOrWhiteSpace(SearchText))
                 filtered = filtered.Where(b => 
                     b.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
                     b.Author.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
 
+            // Сортировка
             filtered = SelectedSort switch
             {
                 "Название (А-Я)" => filtered.OrderBy(b => b.Title),
@@ -158,16 +198,38 @@ namespace LibraryApp.ViewModels
             TotalBooksCount = allBooks.Count;
             ReadBooksCount = allBooks.Count(b => b.IsRead);
         }
+        
+        private void CheckUnreadBooksReminder()
+        {
+            var thirtyDaysAgo = DateTime.Now.AddDays(-30);
+    
+            var oldUnreadBooks = _repository.GetAll()
+                .Where(b => !b.IsRead && b.DateAdded <= thirtyDaysAgo)
+                .ToList();
+    
+            if (oldUnreadBooks.Any())
+            {
+                var message = $"У вас есть {oldUnreadBooks.Count} книг(а), которые лежат непрочитанными больше 30 дней:\n\n";
+                foreach (var book in oldUnreadBooks.Take(5))
+                {
+                    message += $"• {book.Title} - {book.Author} (добавлена {book.DateAdded:dd.MM.yyyy})\n";
+                }
+                if (oldUnreadBooks.Count > 5)
+                    message += $"\n... и ещё {oldUnreadBooks.Count - 5} книг.";
+        
+                MessageBox.Show(message, "Напоминание", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
 
         // Добавить книгу
         private void AddBook()
         {
-            var newBook = new Book { Year = DateTime.Now.Year };
+            var newBook = new Book { Year = DateTime.Now.Year, DateAdded = DateTime.Now };
             var dialog = new BookDialogView(newBook);
             if (dialog.ShowDialog() == true)
             {
                 _repository.Add(newBook);
-                LoadBooks();
+                ApplyFilters(); 
             }
         }
 
@@ -175,11 +237,36 @@ namespace LibraryApp.ViewModels
         private void EditBook()
         {
             if (SelectedBook == null) return;
-            var dialog = new BookDialogView(SelectedBook);
+    
+            // Создаём копию книги для редактирования
+            var bookToEdit = new Book
+            {
+                Id = SelectedBook.Id,
+                Title = SelectedBook.Title,
+                Author = SelectedBook.Author,
+                Genre = SelectedBook.Genre,
+                Year = SelectedBook.Year,
+                Pages = SelectedBook.Pages,
+                IsRead = SelectedBook.IsRead,
+                Rating = SelectedBook.Rating,
+                DateAdded = SelectedBook.DateAdded
+            };
+    
+            var dialog = new BookDialogView(bookToEdit);
             if (dialog.ShowDialog() == true)
             {
+                // Копируем изменённые данные обратно
+                SelectedBook.Title = bookToEdit.Title;
+                SelectedBook.Author = bookToEdit.Author;
+                SelectedBook.Genre = bookToEdit.Genre;
+                SelectedBook.Year = bookToEdit.Year;
+                SelectedBook.Pages = bookToEdit.Pages;
+                SelectedBook.IsRead = bookToEdit.IsRead;
+                SelectedBook.Rating = bookToEdit.Rating;
+        
                 _repository.Update(SelectedBook);
-                LoadBooks();
+                // Не вызываем LoadBooks(), а просто обновляем отображение
+                ApplyFilters();
             }
         }
 
@@ -187,11 +274,12 @@ namespace LibraryApp.ViewModels
         private void DeleteBook()
         {
             if (SelectedBook == null) return;
+    
             if (MessageBox.Show($"Удалить книгу \"{SelectedBook.Title}\"?", "Подтверждение", 
-                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 _repository.Delete(SelectedBook.Id);
-                LoadBooks();
+                ApplyFilters(); 
             }
         }
 
@@ -199,11 +287,34 @@ namespace LibraryApp.ViewModels
         private void ToggleRead()
         {
             if (SelectedBook == null) return;
+    
             SelectedBook.IsRead = !SelectedBook.IsRead;
+    
             if (SelectedBook.IsRead && SelectedBook.Rating == 0)
                 SelectedBook.Rating = 3;
+    
             _repository.Update(SelectedBook);
-            LoadBooks();
+    
+            ApplyFilters(); 
+        }
+        
+        private void UpdateFilters()
+        {
+            var allBooks = _repository.GetAll();
+    
+            // Список авторов
+            var authorsList = allBooks.Select(b => b.Author).Where(a => !string.IsNullOrWhiteSpace(a)).Distinct().OrderBy(a => a).ToList();
+            Authors.Clear();
+            Authors.Add("Все");
+            foreach (var author in authorsList)
+                Authors.Add(author);
+    
+            // Список годов
+            var yearsList = allBooks.Select(b => b.Year).Distinct().OrderBy(y => y).ToList();
+            Years.Clear();
+            Years.Add("Все");
+            foreach (var year in yearsList)
+                Years.Add(year.ToString());
         }
 
         // Экспорт в CSV
