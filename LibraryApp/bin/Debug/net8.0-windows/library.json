@@ -75,5 +75,16 @@
     "IsRead": false,
     "Rating": 4,
     "DateAdded": "2026-06-14T20:33:01.8083288+03:00"
+  },
+  {
+    "Id": 8,
+    "Title": "гари",
+    "Author": "Лок",
+    "Genre": "Роман",
+    "Year": 1680,
+    "Pages": 354,
+    "IsRead": false,
+    "Rating": 4,
+    "DateAdded": "2026-06-14T21:15:45.4884054+03:00"
   }
 ]
